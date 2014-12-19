@@ -28,7 +28,7 @@
 // %Tag(FULLTEXT)%
 #include "ros/ros.h"
 #include "std_msgs/String.h"
-#include "ros_gpio/ros_gpio.h"
+#include "ros_gpio/gpio.h"
 #include <map>
 #include <mraa/gpio.hpp>
 #include <mraa/common.hpp>

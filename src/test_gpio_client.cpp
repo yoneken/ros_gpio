@@ -1,13 +1,13 @@
 #include "ros/ros.h"
-#include "ros_gpio/ros_gpio.h"
+#include "ros_gpio/gpio.h"
 #include <cstdlib>
 
 int main(int argc, char **argv)
 {
-  ros::init(argc, argv, "test_ros_gpio_client");
+  ros::init(argc, argv, "test_ros_gpio");
   if (argc != 2)
   {
-    ROS_INFO("usage: test_ros_gpio_client pin");
+    ROS_INFO("usage: test_ros_gpio pin");
     return 1;
   }
 

@@ -112,15 +112,15 @@ add_executable(gpio_server
   src/gpio_server.cpp
 )
 
-add_executable(test_ros_gpio_client
-  src/test_ros_gpio_client.cpp
+add_executable(test_gpio_client
+  src/test_gpio_client.cpp
 )
 
 ## Add cmake target dependencies of the executable/library
 ## as an example, message headers may need to be generated before nodes
 add_dependencies(gpio_server ros_gpio_generate_messages_cpp)
 
-add_dependencies(test_ros_gpio_client ros_gpio_generate_messages_cpp)
+add_dependencies(test_gpio_client ros_gpio_generate_messages_cpp)
 
 ## Specify libraries to link a library or executable target against
 target_link_libraries(gpio_server
@@ -128,7 +128,7 @@ target_link_libraries(gpio_server
   ${catkin_LIBRARIES}
 )
 
-target_link_libraries(test_ros_gpio_client
+target_link_libraries(test_gpio_client
   ${catkin_LIBRARIES}
 )
 
@@ -153,7 +153,7 @@ install(TARGETS gpio_server
   RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
 )
 
-install(TARGETS test_ros_gpio_client
+install(TARGETS test_gpio_client
 #   ARCHIVE DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
 #   LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
   RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
