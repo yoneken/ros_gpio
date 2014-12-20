@@ -156,9 +156,11 @@ bool setGpioDir(ros_gpio::SetGpioDir::Request &req,
     if(req.direction == "in"){
       res.result = it->second->dir(mraa::DIR_IN);
       ROS_INFO("set gpio direction as input(%d)", (int)req.pin);
+			it->second->useMmap(true);
     }else if(req.direction == "out"){
       res.result = it->second->dir(mraa::DIR_OUT);
       ROS_INFO("set gpio direction as output(%d)", (int)req.pin);
+			it->second->useMmap(true);
     }else{
       ROS_ERROR("Could not set gpio direction except \"in\" or \"out\" : gpio(%d)", (int)req.pin);
       return false;
