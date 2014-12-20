@@ -59,6 +59,16 @@ add_service_files(
   SetGpioMode.srv
   WriteGpio.srv
   ReadGpio.srv
+	OpenPwm.srv
+	ClosePwm.srv
+	WritePwm.srv
+	ReadPwm.srv
+	StartPwm.srv
+	StopPwm.srv
+	SetPwmPeriod.srv
+	SetPwmPulseWidth.srv
+	SetPwmDuty_ms.srv
+	SetPwmDuty_percent.srv
 )
 
 ## Generate actions in the 'action' folder
@@ -108,27 +118,38 @@ include_directories(include)
 # )
 
 ## Declare a cpp executable
-add_executable(gpio_server
-  src/gpio_server.cpp
+add_executable(srv_server
+  src/gpio.cpp
+  src/pwm.cpp
+  src/srv_server.cpp
 )
 
 add_executable(test_gpio_client
   src/test_gpio_client.cpp
 )
 
+add_executable(test_pwm_client
+  src/test_pwm_client.cpp
+)
+
 ## Add cmake target dependencies of the executable/library
 ## as an example, message headers may need to be generated before nodes
-add_dependencies(gpio_server ros_gpio_generate_messages_cpp)
+add_dependencies(srv_server ros_gpio_generate_messages_cpp)
 
 add_dependencies(test_gpio_client ros_gpio_generate_messages_cpp)
+add_dependencies(test_pwm_client ros_gpio_generate_messages_cpp)
 
 ## Specify libraries to link a library or executable target against
-target_link_libraries(gpio_server
+target_link_libraries(srv_server
   mraa
   ${catkin_LIBRARIES}
 )
 
 target_link_libraries(test_gpio_client
+  ${catkin_LIBRARIES}
+)
+
+target_link_libraries(test_pwm_client
   ${catkin_LIBRARIES}
 )
 
@@ -147,13 +168,19 @@ target_link_libraries(test_gpio_client
 # )
 
 ## Mark executables and/or libraries for installation
-install(TARGETS gpio_server 
+install(TARGETS srv_server 
 #   ARCHIVE DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
 #   LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
   RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
 )
 
 install(TARGETS test_gpio_client
+#   ARCHIVE DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
+#   LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
+  RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
+)
+
+install(TARGETS test_pwm_client
 #   ARCHIVE DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
 #   LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
   RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}

@@ -1,5 +1,5 @@
 #include "ros/ros.h"
-#include "ros_gpio/gpio.h"
+#include "ros_gpio/service.h"
 #include <cstdlib>
 
 int main(int argc, char **argv)
@@ -13,7 +13,7 @@ int main(int argc, char **argv)
 
   ros::NodeHandle n;
 
-  ros::ServiceClient clientOpen = n.serviceClient<ros_gpio::OpenGpio>("open");
+  ros::ServiceClient clientOpen = n.serviceClient<ros_gpio::OpenGpio>("open_gpio");
   ros_gpio::OpenGpio srvOpen;
   srvOpen.request.pin = atoi(argv[1]);
   if (!clientOpen.call(srvOpen))
@@ -22,7 +22,7 @@ int main(int argc, char **argv)
     return 1;
   }
 
-  ros::ServiceClient clientSetDir = n.serviceClient<ros_gpio::SetGpioDir>("set_dir");
+  ros::ServiceClient clientSetDir = n.serviceClient<ros_gpio::SetGpioDir>("set_gpio_dir");
   ros_gpio::SetGpioDir srvSetDir;
   srvSetDir.request.pin = atoi(argv[1]);
   srvSetDir.request.direction = "out";
@@ -32,7 +32,7 @@ int main(int argc, char **argv)
     return 1;
   }
 
-  ros::ServiceClient clientWrite = n.serviceClient<ros_gpio::WriteGpio>("write");
+  ros::ServiceClient clientWrite = n.serviceClient<ros_gpio::WriteGpio>("write_gpio");
   ros_gpio::WriteGpio srvWrite;
   srvWrite.request.pin = atoi(argv[1]);
 
@@ -53,7 +53,7 @@ int main(int argc, char **argv)
     ++count;
   }
 
-  ros::ServiceClient clientClose = n.serviceClient<ros_gpio::CloseGpio>("close");
+  ros::ServiceClient clientClose = n.serviceClient<ros_gpio::CloseGpio>("close_gpio");
   ros_gpio::CloseGpio srvClose;
   srvClose.request.pin = atoi(argv[1]);
   if (!clientClose.call(srvClose))

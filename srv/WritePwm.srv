@@ -1,0 +1,4 @@
+uint8 pin
+float32 percent
+---
+uint8 result

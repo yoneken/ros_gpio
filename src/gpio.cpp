@@ -28,33 +28,16 @@
 // %Tag(FULLTEXT)%
 #include "ros/ros.h"
 #include "std_msgs/String.h"
+#include "ros_gpio/service.h"
 #include "ros_gpio/gpio.h"
+#include "ros_gpio/internal.h"
 #include <map>
 #include <mraa/gpio.hpp>
 #include <mraa/common.hpp>
 
-enum{
-	FUNC_AIO = 0,
-	FUNC_GPIO,
-	FUNC_I2C,
-	FUNC_PWM,
-	FUNC_SPI,
-	FUNC_UART
-};
-const char *funcname[] = {"Aio", "Gpio", "i2c", "Pwm", "Spi", "Uart"};
-std::map<int, int> pin_manager;
+extern std::map<int, int> pin_manager;
 
 std::map<int, mraa::Gpio*> gpios;
-
-bool checkDuplicate(int pin)
-{
-  std::map<int, int>::const_iterator it = pin_manager.find(pin);
-  if(it != pin_manager.end()){
-   	ROS_ERROR("Port %d is already initialized as %s.", pin, funcname[(int)it->second]);
-		return true;
-  }
-	return false;
-}
 
 bool openGpio(ros_gpio::OpenGpio::Request &req,
               ros_gpio::OpenGpio::Response &res)
@@ -125,10 +108,13 @@ bool setGpioMode(ros_gpio::SetGpioMode::Request &req,
 {
   std::map<int, mraa::Gpio*>::const_iterator it = gpios.find((int)req.pin);
   if(it == gpios.end()){
+    ROS_ERROR("tried to set mode un-initialized gpio(%d)", (int)req.pin);
+    return false;
+  }else{
     if(req.mode == "strong"){
       res.result = it->second->mode(mraa::MODE_STRONG);
       ROS_INFO("set gpio mode as strong(%d)", (int)req.pin);
-   }else if(req.mode == "pullup"){
+    }else if(req.mode == "pullup"){
       res.result = it->second->mode(mraa::MODE_PULLUP);
       ROS_INFO("set gpio mode as pull up(%d)", (int)req.pin);
     }else if(req.mode == "pulldown"){
@@ -150,7 +136,7 @@ bool setGpioDir(ros_gpio::SetGpioDir::Request &req,
 {
   std::map<int, mraa::Gpio*>::const_iterator it = gpios.find((int)req.pin);
   if(it == gpios.end()){
-    ROS_ERROR("tried to read un-initialized gpio(%d)", (int)req.pin);
+    ROS_ERROR("tried to set direction un-initialized gpio(%d)", (int)req.pin);
     return false;
   }else{
     if(req.direction == "in"){
@@ -169,25 +155,4 @@ bool setGpioDir(ros_gpio::SetGpioDir::Request &req,
   return true;
 }
 
-int main(int argc, char **argv)
-{
-  ros::init(argc, argv, "gpio_server");
 
-  ros::NodeHandle n;
-
-// %Tag(SERVICE)%
-  ros::ServiceServer srvOpen = n.advertiseService("open", openGpio);
-  ros::ServiceServer srvClose = n.advertiseService("close", closeGpio);
-  ros::ServiceServer srvWrite = n.advertiseService("write", writeGpio);
-  ros::ServiceServer srvRead = n.advertiseService("read", readGpio);
-  ros::ServiceServer srvSetDir = n.advertiseService("set_dir", setGpioDir);
-  ros::ServiceServer srvSetMode = n.advertiseService("set_mode", setGpioMode);
-// %EndTag(SERVICE)%
-
-// %Tag(SPIN)%
-  ros::spin();
-// %EndTag(SPIN)%
-
-  return 0;
-}
-// %EndTag(FULLTEXT)%

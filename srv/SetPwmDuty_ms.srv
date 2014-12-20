@@ -1,0 +1,5 @@
+uint8 pin
+uint32 period_ms
+float32 duty_ms
+---
+uint8 result

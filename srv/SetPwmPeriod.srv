@@ -1,0 +1,4 @@
+uint8 pin
+float32 us
+---
+uint8 result
