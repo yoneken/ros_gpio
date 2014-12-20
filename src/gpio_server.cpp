@@ -33,11 +33,34 @@
 #include <mraa/gpio.hpp>
 #include <mraa/common.hpp>
 
+enum{
+	FUNC_AIO = 0,
+	FUNC_GPIO,
+	FUNC_I2C,
+	FUNC_PWM,
+	FUNC_SPI,
+	FUNC_UART
+};
+const char *funcname[] = {"Aio", "Gpio", "i2c", "Pwm", "Spi", "Uart"};
+std::map<int, int> pin_manager;
+
 std::map<int, mraa::Gpio*> gpios;
+
+bool checkDuplicate(int pin)
+{
+  std::map<int, int>::const_iterator it = pin_manager.find(pin);
+  if(it != pin_manager.end()){
+   	ROS_ERROR("Port %d is already initialized as %s.", pin, funcname[(int)it->second]);
+		return true;
+  }
+	return false;
+}
 
 bool openGpio(ros_gpio::OpenGpio::Request &req,
               ros_gpio::OpenGpio::Response &res)
 {
+	if(checkDuplicate((int)req.pin)) return false;
+
   mraa::Gpio *gpio = new mraa::Gpio((int)req.pin);
   if(gpio == NULL){
     res.result = MRAA_ERROR_UNSPECIFIED;
@@ -46,6 +69,8 @@ bool openGpio(ros_gpio::OpenGpio::Request &req,
   }
   gpios.insert(std::map<int, mraa::Gpio*>::value_type((int)req.pin, gpio));
   res.result = MRAA_SUCCESS;
+
+	pin_manager.insert(std::map<int, int>::value_type((int)req.pin, FUNC_GPIO));
 
   ROS_INFO("opened gpio(%d)", (int)req.pin);
   return true;
@@ -58,8 +83,10 @@ bool closeGpio(ros_gpio::CloseGpio::Request &req,
   if(it == gpios.end()){
     ROS_WARN("tried to close un-initialized gpio(%d)", (int)req.pin);
   }else{
-    gpios.erase((*it).first);
-  }
+    gpios.erase(it->first);
+
+	  pin_manager.erase((int)req.pin);
+   }
 
   ROS_INFO("closed gpio(%d)", (int)req.pin);
   return true;
@@ -73,7 +100,7 @@ bool writeGpio(ros_gpio::WriteGpio::Request &req,
     ROS_ERROR("tried to write un-initialized gpio(%d)", (int)req.pin);
     return false;
   }else{
-    res.result = (*it).second->write((int)req.value);
+    res.result = it->second->write((int)req.value);
     ROS_INFO("wrote gpio(%d) : %d", (int)req.pin, (int)req.value);
   }
   return true;
@@ -87,7 +114,7 @@ bool readGpio(ros_gpio::ReadGpio::Request &req,
     ROS_ERROR("tried to read un-initialized gpio(%d)", (int)req.pin);
     return false;
   }else{
-    res.result = (*it).second->read();
+    res.result = it->second->read();
     ROS_INFO("read gpio(%d) : %d", (int)req.pin, (int)res.result);
   }
   return true;
@@ -99,16 +126,16 @@ bool setGpioMode(ros_gpio::SetGpioMode::Request &req,
   std::map<int, mraa::Gpio*>::const_iterator it = gpios.find((int)req.pin);
   if(it == gpios.end()){
     if(req.mode == "strong"){
-      res.result = (*it).second->mode(mraa::MODE_STRONG);
+      res.result = it->second->mode(mraa::MODE_STRONG);
       ROS_INFO("set gpio mode as strong(%d)", (int)req.pin);
    }else if(req.mode == "pullup"){
-      res.result = (*it).second->mode(mraa::MODE_PULLUP);
+      res.result = it->second->mode(mraa::MODE_PULLUP);
       ROS_INFO("set gpio mode as pull up(%d)", (int)req.pin);
     }else if(req.mode == "pulldown"){
-      res.result = (*it).second->mode(mraa::MODE_PULLDOWN);
+      res.result = it->second->mode(mraa::MODE_PULLDOWN);
       ROS_INFO("set gpio mode as pull down(%d)", (int)req.pin);
     }else if(req.mode == "hiz"){
-      res.result = (*it).second->mode(mraa::MODE_HIZ);
+      res.result = it->second->mode(mraa::MODE_HIZ);
       ROS_INFO("set gpio mode as hi-impedance(%d)", (int)req.pin);
     }else{
       ROS_ERROR("Could not set gpio mode except \"strong\", \"pullup\", \"pulldown\", or \"hiz\" : gpio(%d)", (int)req.pin);
@@ -127,10 +154,10 @@ bool setGpioDir(ros_gpio::SetGpioDir::Request &req,
     return false;
   }else{
     if(req.direction == "in"){
-      res.result = (*it).second->dir(mraa::DIR_IN);
+      res.result = it->second->dir(mraa::DIR_IN);
       ROS_INFO("set gpio direction as input(%d)", (int)req.pin);
     }else if(req.direction == "out"){
-      res.result = (*it).second->dir(mraa::DIR_OUT);
+      res.result = it->second->dir(mraa::DIR_OUT);
       ROS_INFO("set gpio direction as output(%d)", (int)req.pin);
     }else{
       ROS_ERROR("Could not set gpio direction except \"in\" or \"out\" : gpio(%d)", (int)req.pin);
