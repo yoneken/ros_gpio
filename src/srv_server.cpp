@@ -31,6 +31,7 @@
 #include "ros_gpio/service.h"
 #include "ros_gpio/gpio.h"
 #include "ros_gpio/pwm.h"
+#include "ros_gpio/uart.h"
 #include "ros_gpio/internal.h"
 #include <map>
 #include <mraa/gpio.hpp>
@@ -45,9 +46,9 @@ bool checkDuplicate(int pin)
   std::map<int, int>::const_iterator it = pin_manager.find(pin);
   if(it != pin_manager.end()){
    	ROS_ERROR("Port %d is already initialized as %s.", pin, funcname[(int)it->second]);
-		return true;
+    return true;
   }
-	return false;
+  return false;
 }
 
 int main(int argc, char **argv)
@@ -64,7 +65,7 @@ int main(int argc, char **argv)
   ros::ServiceServer srvSetGpioDir = n.advertiseService("set_gpio_dir", setGpioDir);
   ros::ServiceServer srvSetGpioMode = n.advertiseService("set_gpio_mode", setGpioMode);
 
-	ros::ServiceServer srvOpenPwm = n.advertiseService("open_pwm", openPwm);
+  ros::ServiceServer srvOpenPwm = n.advertiseService("open_pwm", openPwm);
   ros::ServiceServer srvClosePwm = n.advertiseService("close_pwm", closePwm);
   ros::ServiceServer srvWritePwm = n.advertiseService("write_pwm", writePwm);
   ros::ServiceServer srvReadPwm = n.advertiseService("read_pwm", readPwm);
@@ -74,6 +75,9 @@ int main(int argc, char **argv)
   ros::ServiceServer srvSetPwmDuty_percent = n.advertiseService("set_pwm_duty_percent", setPwmDuty_percent);
   ros::ServiceServer srvStartPwm = n.advertiseService("start_pwm", startPwm);
   ros::ServiceServer srvStopPwm = n.advertiseService("stop_pwm", stopPwm);
+
+  ros::ServiceServer srvOpenUart = n.advertiseService("open_uart", openUart);
+  ros::ServiceServer srvCloseUart = n.advertiseService("close_uart", closeUart);
   // %EndTag(SERVICE)%
 
 // %Tag(SPIN)%

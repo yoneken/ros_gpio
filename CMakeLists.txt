@@ -59,16 +59,18 @@ add_service_files(
   SetGpioMode.srv
   WriteGpio.srv
   ReadGpio.srv
-	OpenPwm.srv
-	ClosePwm.srv
-	WritePwm.srv
-	ReadPwm.srv
-	StartPwm.srv
-	StopPwm.srv
-	SetPwmPeriod.srv
-	SetPwmPulseWidth.srv
-	SetPwmDuty_ms.srv
-	SetPwmDuty_percent.srv
+  OpenPwm.srv
+  ClosePwm.srv
+  WritePwm.srv
+  ReadPwm.srv
+  StartPwm.srv
+  StopPwm.srv
+  SetPwmPeriod.srv
+  SetPwmPulseWidth.srv
+  SetPwmDuty_ms.srv
+  SetPwmDuty_percent.srv
+  OpenUart.srv
+  CloseUart.srv
 )
 
 ## Generate actions in the 'action' folder
@@ -121,6 +123,7 @@ include_directories(include)
 add_executable(srv_server
   src/gpio.cpp
   src/pwm.cpp
+  src/uart.cpp
   src/srv_server.cpp
 )
 

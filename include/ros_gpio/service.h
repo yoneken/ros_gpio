@@ -18,3 +18,6 @@
 #include "ros_gpio/SetPwmDuty_ms.h"
 #include "ros_gpio/SetPwmDuty_percent.h"
 
+#include "ros_gpio/OpenUart.h"
+#include "ros_gpio/CloseUart.h"
+

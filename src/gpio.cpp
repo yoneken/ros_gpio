@@ -42,9 +42,9 @@ std::map<int, mraa::Gpio*> gpios;
 bool openGpio(ros_gpio::OpenGpio::Request &req,
               ros_gpio::OpenGpio::Response &res)
 {
-	if(checkDuplicate((int)req.pin)) return false;
+  if(checkDuplicate((int)req.pin)) return false;
 
-  mraa::Gpio *gpio = new mraa::Gpio((int)req.pin);
+   mraa::Gpio *gpio = new mraa::Gpio((int)req.pin);
   if(gpio == NULL){
     res.result = MRAA_ERROR_UNSPECIFIED;
     ROS_ERROR("failed to open gpio(%d)", (int)req.pin);
@@ -53,7 +53,7 @@ bool openGpio(ros_gpio::OpenGpio::Request &req,
   gpios.insert(std::map<int, mraa::Gpio*>::value_type((int)req.pin, gpio));
   res.result = MRAA_SUCCESS;
 
-	pin_manager.insert(std::map<int, int>::value_type((int)req.pin, FUNC_GPIO));
+  pin_manager.insert(std::map<int, int>::value_type((int)req.pin, FUNC_GPIO));
 
   ROS_INFO("opened gpio(%d)", (int)req.pin);
   return true;
@@ -68,7 +68,7 @@ bool closeGpio(ros_gpio::CloseGpio::Request &req,
   }else{
     gpios.erase(it->first);
 
-	  pin_manager.erase((int)req.pin);
+    pin_manager.erase((int)req.pin);
    }
 
   ROS_INFO("closed gpio(%d)", (int)req.pin);
@@ -154,5 +154,5 @@ bool setGpioDir(ros_gpio::SetGpioDir::Request &req,
   }
   return true;
 }
-
+// %EndTag(FULLTEXT)%
 

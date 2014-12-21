@@ -186,4 +186,5 @@ bool stopPwm(ros_gpio::StopPwm::Request &req,
   }
   return true;
 }
+// %EndTag(FULLTEXT)%
 
