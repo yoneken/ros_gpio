@@ -32,7 +32,7 @@
 #include "ros_gpio/uart.h"
 #include "ros_gpio/internal.h"
 #include <map>
-#include <mraa/gpio.hpp>
+#include <mraa/uart.hpp>
 #include <mraa/common.hpp>
 
 extern std::map<int, int> pin_manager;
