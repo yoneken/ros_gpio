@@ -27,7 +27,6 @@
 
 // %Tag(FULLTEXT)%
 #include "ros/ros.h"
-#include "std_msgs/String.h"
 #include "ros_gpio/service.h"
 #include "ros_gpio/gpio.h"
 #include "ros_gpio/internal.h"
@@ -38,6 +37,20 @@
 extern std::map<int, int> pin_manager;
 
 std::map<int, mraa::Gpio*> gpios;
+
+ros::Publisher state_pub;
+
+void changedGpioState(void *arg)
+{
+  mraa::Gpio *dev = (mraa::Gpio *)arg;
+
+  ros_gpio::GpioState state;
+  state.pin = dev->getPin();
+  state.value = dev->read();
+  ROS_INFO("Published: pin %d state changed to %d", state.pin, state.value);
+
+  state_pub.publish(state);
+}
 
 bool openGpio(ros_gpio::OpenGpio::Request &req,
               ros_gpio::OpenGpio::Response &res)
@@ -66,6 +79,8 @@ bool closeGpio(ros_gpio::CloseGpio::Request &req,
   if(it == gpios.end()){
     ROS_WARN("tried to close un-initialized gpio(%d)", (int)req.pin);
   }else{
+    it->second->isrExit();
+
     gpios.erase(it->first);
 
     pin_manager.erase((int)req.pin);
@@ -99,6 +114,8 @@ bool readGpio(ros_gpio::ReadGpio::Request &req,
   }else{
     res.result = it->second->read();
     ROS_INFO("read gpio(%d) : %d", (int)req.pin, (int)res.result);
+
+    it->second->isr(mraa::EDGE_BOTH, changedGpioState, (void *)it->second);
   }
   return true;
 }

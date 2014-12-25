@@ -6,6 +6,7 @@
 #include "ros_gpio/ReadGpio.h"
 #include "ros_gpio/SetGpioMode.h"
 #include "ros_gpio/SetGpioDir.h"
+#include "ros_gpio/GpioState.h"
 
 #include "ros_gpio/OpenPwm.h"
 #include "ros_gpio/ClosePwm.h"

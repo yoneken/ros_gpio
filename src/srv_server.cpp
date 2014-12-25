@@ -27,7 +27,6 @@
 
 // %Tag(FULLTEXT)%
 #include "ros/ros.h"
-#include "std_msgs/String.h"
 #include "ros_gpio/service.h"
 #include "ros_gpio/gpio.h"
 #include "ros_gpio/pwm.h"
@@ -38,6 +37,8 @@
 #include <mraa/common.hpp>
 
 const char *funcname[] = {"Aio", "Gpio", "i2c", "Pwm", "Spi", "Uart"};
+
+extern ros::Publisher state_pub;
 
 std::map<int, int> pin_manager;
 
@@ -64,6 +65,8 @@ int main(int argc, char **argv)
   ros::ServiceServer srvReadGpio = n.advertiseService("read_gpio", readGpio);
   ros::ServiceServer srvSetGpioDir = n.advertiseService("set_gpio_dir", setGpioDir);
   ros::ServiceServer srvSetGpioMode = n.advertiseService("set_gpio_mode", setGpioMode);
+
+  state_pub = n.advertise<ros_gpio::GpioState>("gpio_state", 1000);
 
   ros::ServiceServer srvOpenPwm = n.advertiseService("open_pwm", openPwm);
   ros::ServiceServer srvClosePwm = n.advertiseService("close_pwm", closePwm);

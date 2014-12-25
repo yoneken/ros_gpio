@@ -1,5 +1,7 @@
 #pragma once
 
+void changedGpioState(void *arg);
+
 bool openGpio(ros_gpio::OpenGpio::Request &req,
               ros_gpio::OpenGpio::Response &res);
 bool closeGpio(ros_gpio::CloseGpio::Request &req,

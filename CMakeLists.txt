@@ -44,11 +44,10 @@ find_package(catkin REQUIRED COMPONENTS
 ##   * add every package in MSG_DEP_SET to generate_messages(DEPENDENCIES ...)
 
 ## Generate messages in the 'msg' folder
-# add_message_files(
-#   FILES
-#   Message1.msg
-#   Message2.msg
-# )
+add_message_files(
+  FILES
+  GpioState.msg
+)
 
 ## Generate services in the 'srv' folder
 add_service_files(
@@ -127,8 +126,12 @@ add_executable(srv_server
   src/srv_server.cpp
 )
 
-add_executable(test_gpio_client
-  src/test_gpio_client.cpp
+add_executable(test_gpio_out_client
+  src/test_gpio_out_client.cpp
+)
+
+add_executable(test_gpio_in_client
+  src/test_gpio_in_client.cpp
 )
 
 add_executable(test_pwm_client
@@ -139,7 +142,8 @@ add_executable(test_pwm_client
 ## as an example, message headers may need to be generated before nodes
 add_dependencies(srv_server ros_gpio_generate_messages_cpp)
 
-add_dependencies(test_gpio_client ros_gpio_generate_messages_cpp)
+add_dependencies(test_gpio_out_client ros_gpio_generate_messages_cpp)
+add_dependencies(test_gpio_in_client ros_gpio_generate_messages_cpp)
 add_dependencies(test_pwm_client ros_gpio_generate_messages_cpp)
 
 ## Specify libraries to link a library or executable target against
@@ -148,7 +152,11 @@ target_link_libraries(srv_server
   ${catkin_LIBRARIES}
 )
 
-target_link_libraries(test_gpio_client
+target_link_libraries(test_gpio_out_client
+  ${catkin_LIBRARIES}
+)
+
+target_link_libraries(test_gpio_in_client
   ${catkin_LIBRARIES}
 )
 
@@ -177,7 +185,13 @@ install(TARGETS srv_server
   RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
 )
 
-install(TARGETS test_gpio_client
+install(TARGETS test_gpio_out_client
+#   ARCHIVE DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
+#   LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
+  RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
+)
+
+install(TARGETS test_gpio_in_client
 #   ARCHIVE DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
 #   LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
   RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}

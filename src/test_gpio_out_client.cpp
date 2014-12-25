@@ -2,6 +2,11 @@
 #include "ros_gpio/service.h"
 #include <cstdlib>
 
+void stateChanged(const ros_gpio::GpioState &state)
+{
+  ROS_INFO("Pin %d state changed to %d", state.pin, state.value);
+}
+
 int main(int argc, char **argv)
 {
   ros::init(argc, argv, "test_ros_gpio");

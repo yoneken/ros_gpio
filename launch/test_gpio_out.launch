@@ -2,6 +2,6 @@
 <launch>
   <group ns="gpio">
     <node pkg="ros_gpio" name="srv_server" type="srv_server" output="screen" />
-    <node pkg="ros_gpio" name="test_pwm_client" type="test_pwm_client" args="20" />
+    <node pkg="ros_gpio" name="test_gpio_out_client" type="test_gpio_out_client" args="20" />
   </group>
 </launch>

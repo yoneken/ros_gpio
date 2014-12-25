@@ -1,7 +1,0 @@
-<?xml version="1.0" encoding="utf-8" ?>
-<launch>
-  <group ns="gpio">
-    <node pkg="ros_gpio" name="srv_server" type="srv_server" />
-    <node pkg="ros_gpio" name="test_gpio_client" type="test_gpio_client" args="20" />
-  </group>
-</launch>
