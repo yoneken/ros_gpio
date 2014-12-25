@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <package>
   <name>ros_gpio</name>
-  <version>0.0.3</version>
+  <version>0.0.4</version>
   <description>The ros_gpio package provides very primitive access to GPIO (General Purpose IO) using libmraa.</description>
 
   <!-- One maintainer tag required, multiple allowed, one person per tag --> 
